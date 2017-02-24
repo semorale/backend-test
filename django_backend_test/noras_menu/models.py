@@ -24,12 +24,13 @@ class MenuItems(models.Model):
 class UserSelectedLunch(models.Model):
 	""" Special user's observations for his selected lunch option."""
 	user = models.CharField(max_length=128)
+	menu = models.ForeignKey(Menu)
 	selected_item = models.ForeignKey(MenuItems)
-	xl = models.BooleanField()
+	xl = models.BooleanField(default=False)
 	observation = models.TextField()
 
 	class Meta:
-		unique_together = ("user", "selected_item")
+		unique_together = ("user", "menu")
 
 class Subscribers(models.Model):
 	""" List of Subscribers. """
