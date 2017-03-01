@@ -7,4 +7,5 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^noras_menu/', include('noras_menu.urls',namespace="noras_menu")),
 ]
