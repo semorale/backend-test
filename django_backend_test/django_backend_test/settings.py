@@ -145,4 +145,4 @@ DATETIME_INPUT_FORMATS = [
 #EMAIL_PORT = 
 
 
-
+WEBHOOK = "https://hooks.slack.com/services/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"

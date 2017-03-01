@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 from .models import Subscribers, MenuItems
+from django_backend_test.settings import WEBHOOK
 
  
 @app.task
@@ -29,4 +30,4 @@ def slack_remainder(menu,link):
 	text="".join([x+"\n" for x in items_menu])
 	data = {"text":msg.format(text,link), "username":"Nora", "icon_emoji": ":knife_fork_plate:",}
 	headers = {'Content-type': 'application/json'}
-	response = requests.post("https://hooks.slack.com/services/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", data=json.dumps(data), headers=headers)
+	response = requests.post(WEBHOOK, data=json.dumps(data), headers=headers)
