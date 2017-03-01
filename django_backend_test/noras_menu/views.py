@@ -175,3 +175,62 @@ class UpdateMenu(UpdateView):
 		                          menu_items_formset=menu_items_formset))
 
 
+class CreateSelection(CreateView):
+	model = UserSelectedLunch
+	form_class = MenuSelectForm
+	template_name = 'menu_select.html'
+
+	def get(self, request, *args, **kwargs):
+		if 'uuid' in kwargs:
+			uuid = kwargs['uuid']
+			menu = get_object_or_404(Menu, menu_uuid = uuid)
+		menu_date_naive = datetime.combine(menu.day, datetime.strptime('11:00AM', '%I:%M%p').time())
+		deadline = pytz.timezone('America/Santiago').localize(menu_date_naive)
+		my_date = datetime.now(pytz.timezone('America/Santiago'))
+		if my_date > deadline:
+			return HttpResponse("Menu Closed for this Day")
+		form_class = self.get_form_class()
+		form = self.get_form(form_class)
+		items = MenuItems.objects.filter(menu_id=menu.pk)
+		print items
+
+		return render_to_response(self.get_template_names(),{'form':form, 'menu':menu.pk, 'uuid':uuid, 'menu_items':items}, RequestContext(request))
+
+	def post(self, request, *args, **kwargs):
+		"""
+		Handles POST requests, instantiating a form instance and its inline
+		formsets with the passed POST variables and then checking them for
+		validity.
+		"""
+		if 'uuid' in kwargs:
+			uuid = kwargs['uuid']
+			menu = get_object_or_404(Menu, menu_uuid = uuid)
+		menu_date_naive = datetime.combine(menu.day, datetime.strptime('11:00AM', '%I:%M%p').time())
+		deadline = pytz.timezone('America/Santiago').localize(menu_date_naive)
+		my_date = datetime.now(pytz.timezone('America/Santiago'))
+		if my_date > deadline:
+			return HttpResponse("Menu Closed for this Day")
+		self.object = None
+		form_class = self.get_form_class()
+		form = self.get_form(form_class)
+		if form.is_valid():
+		    return self.form_valid(form)
+		else:
+		    return self.form_invalid(form)
+
+	def get_success_url(self):
+		return reverse_lazy('noras_menu:Create Selection',  kwargs = {'uuid': self.kwargs['uuid']})
+
+class ListSelection(ListView):
+	""" Simple list of selected menu order by day"""
+	model = UserSelectedLunch
+	template_name = "menu_list_selected.html"
+
+	def dispatch(self, request, *args, **kwargs):
+	    """ Permission check for this class """
+	    if not request.user.has_perm('noras_menu.list_selected'):
+	        raise PermissionDenied(
+	            "You do not have permission"
+	        )
+	    return super(ListSelection, self).dispatch(request, *args, **kwargs)
+
