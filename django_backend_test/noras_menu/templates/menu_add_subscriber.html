@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load staticfiles%}
+
+{%block estilos%}
+    {{block.super}}
+    <link href="{%static 'base/css/datepicker3.css'%}" rel="stylesheet">
+{%endblock%}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+            	<form action="/noras_menu/subscriber/new" method="post">
+		            {% csrf_token %}
+		            <div>
+		                {{ form.as_p }}
+		            </div>
+		            <input type="submit" value="Add Subscriber" class="submit" />
+		        </form>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{%block scripts%}
+	{{block.super}}
+	<script src="{%static 'base/js/jquery.formset.js'%}"></script>
+	<script src="{%static 'base/js/bootstrap-datepicker.js'%}"></script>
+	<script type="text/javascript">
+	    $(document).ready(function(){
+	        $('#id_day').datepicker({
+	            format:'dd-mm-yyyy',
+	            keyboardNavigation: false,
+	            autoclose: true,
+	            defaultDate: new Date()
+	        });
+	    });
+	     $(function() {
+            $(".inline.{{ menu_items_formset.prefix }}").formset({
+                prefix: "{{ menu_items_formset.prefix }}",
+            })
+        })
+    </script>
+
+{%endblock%}

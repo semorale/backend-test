@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load staticfiles%}
+
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Menu by Day</h1>
+			<ul>
+				{% regroup object_list by menu.day|date:"d-m-Y" as objects_by_day %}
+				{% for d in objects_by_day %}
+					{{d.grouper}}
+					{% for selection in d.list%}
+						<li>{{ selection.user }} - {{selection.selected_item}}</li>
+							{% empty %}
+						<li>No menu to be listed.</li>
+					{% endfor %}
+				{% endfor %}
+			</ul>
+    </div>
+
+
+
+{% endblock %}
+

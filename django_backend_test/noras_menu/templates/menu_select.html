@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load staticfiles%}
+
+{%block estilos%}
+    {{block.super}}
+    <link href="{%static 'base/css/datepicker3.css'%}" rel="stylesheet">
+{%endblock%}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+            	<form action="/noras_menu/menu/{{uuid}}" method="post">
+		            {% csrf_token %}
+		            <div>
+		                <p><label for="id_user">User:</label> {{form.user}}</p>
+						<input type="hidden" name="menu" value="{{menu}}">
+						<p><label for="id_selected_item">Selected item:</label> 
+							<select id="id_selected_item" name="selected_item">
+								<option value="" selected="selected">---------</option>
+								{% for i in menu_items %}
+									<option value="{{i.pk}}">{{i.name}}</option>
+								{% endfor %}
+							</select>
+						</p>
+						<p><label for="id_xl">Extra Large Version:</label> {{form.xl}}</p>
+						<p><label for="id_observation">Obs:</label> {{form.observation}}</p>
+		            </div>
+		            <input type="submit" value="Add Option" class="submit" />
+		        </form>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
