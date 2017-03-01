@@ -234,3 +234,12 @@ class ListSelection(ListView):
 	        )
 	    return super(ListSelection, self).dispatch(request, *args, **kwargs)
 
+
+class CreateSubscriber(CreateView):
+	""" View to add a subscriber to de db"""
+	model = Subscribers
+	form_class = SubscribersForm
+	template_name = "menu_add_subscriber.html"
+
+	def get_success_url(self):
+		return reverse_lazy('noras_menu:Create Subscriber')
