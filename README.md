@@ -12,6 +12,7 @@ To run this project you need to add some variables to the settings file.
 - [Dependencies](#dependencies)
 - [Slack](#webhook)
 - [Mail Settings](#mail)
+- [Permissions](#Permissions)
 
 ## Dependencies
 This project uses async process to send messages by email or slack. To achieve this, we use celery and rabbitmq.
@@ -28,3 +29,11 @@ You can get a webhook in https://api.slack.com/incoming-webhooks
 
 ## Mail Settings
 To send a remainder by mail, you need to set the email variables in the settings file.
+
+## Permissions
+You need to manually add the permissions to nora user:
+add_menu
+list_menu
+change_menu
+list_selected
+
