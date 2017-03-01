@@ -99,4 +99,79 @@ class CreateMenu(CreateView):
 		return reverse('noras_menu:Create Menu')
 
 
+class ListMenu(ListView):
+	model = Menu
+	template_name = 'menu_list.html'
+
+	def dispatch(self, request, *args, **kwargs):
+	    """ Permission check for this class """
+	    if not request.user.has_perm('noras_menu.list_menu'):
+	        raise PermissionDenied(
+	            "You do not have permission"
+	        )
+	    return super(ListMenu, self).dispatch(request, *args, **kwargs)
+
+
+class UpdateMenu(UpdateView):
+	model = Menu
+	template_name = 'menu_edit.html'
+	fields = ['day','id']
+
+	def dispatch(self, request, *args, **kwargs):
+	    """ Permission check for this class """
+	    if not request.user.has_perm('noras_menu.change_menu'):
+	        raise PermissionDenied(
+	            "You do not have permission"
+	        )
+	    return super(UpdateMenu, self).dispatch(request, *args, **kwargs)
+
+	def get_success_url(self):
+		return reverse_lazy('noras_menu:Update Menu',  kwargs = {'pk': self.object.pk})
+
+	def get(self, request, *args, **kwargs):
+		"""
+		Handles GET requests and instantiates blank versions of the form
+		and its inline formsets.
+		"""
+		self.object = self.get_object()
+		form_class = self.get_form_class()
+		form = self.get_form(form_class)
+		menu_items_formset = MenuItemsFormSet(instance=self.object)
+		return self.render_to_response(self.get_context_data(form=form,menu_items_formset=menu_items_formset))
+
+	def post(self, request, *args, **kwargs):
+		"""
+		Handles POST requests, instantiating a form instance and its inline
+		formsets with the passed POST variables and then checking them for
+		validity.
+		"""
+		self.object = self.get_object()
+		form_class = self.get_form_class()
+		form = self.get_form(form_class)
+		menu_items_formset = MenuItemsFormSet(self.request.POST, instance=self.object)
+		if (form.is_valid() and menu_items_formset.is_valid()):
+		    return self.form_valid(form, menu_items_formset)
+		else:
+		    return self.form_invalid(form, menu_items_formset)
+
+	def form_valid(self, form, menu_items_formset):
+		"""
+		Called if all forms are valid. Creates a Recipe instance along with
+		associated Ingredients and Instructions and then redirects to a
+		success page.
+		"""
+		self.object = form.save()
+		menu_items_formset.instance = self.object
+		menu_items_formset.save()
+		return HttpResponseRedirect(self.get_success_url())
+
+	def form_invalid(self, form, menu_items_formset):
+		"""
+		Called if a form is invalid. Re-renders the context data with the
+		data-filled forms and errors.
+		"""
+		return self.render_to_response(
+		    self.get_context_data(form=form,
+		                          menu_items_formset=menu_items_formset))
+
 
