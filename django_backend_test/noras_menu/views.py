@@ -28,6 +28,7 @@ from tasks import mail_remainder,slack_remainder
 
 
 class CreateMenu(CreateView):
+	""" Class Based View to create a new menu """
 	model = Menu
 	form_class = MenuForm
 	template_name = 'menu_add.html'
@@ -100,6 +101,7 @@ class CreateMenu(CreateView):
 
 
 class ListMenu(ListView):
+	""" Class Based View to list menu"""
 	model = Menu
 	template_name = 'menu_list.html'
 
@@ -113,6 +115,7 @@ class ListMenu(ListView):
 
 
 class UpdateMenu(UpdateView):
+	""" Class Based View to update a menu instance"""
 	model = Menu
 	template_name = 'menu_edit.html'
 	fields = ['day','id']
@@ -176,6 +179,7 @@ class UpdateMenu(UpdateView):
 
 
 class CreateSelection(CreateView):
+	""" Class Based View to select an option of menu """
 	model = UserSelectedLunch
 	form_class = MenuSelectForm
 	template_name = 'menu_select.html'
